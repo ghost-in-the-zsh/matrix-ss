@@ -49,7 +49,7 @@ class Matrix:
 
     def setup_streams(self):
         stream_cnt = self.screen.get_width() // Matrix.FONT_SIZE
-        stream_len = self.screen.get_height() // Matrix.FONT_SIZE + 1
+        stream_len = self.screen.get_height() // Matrix.FONT_SIZE
         [self.add_stream(col, stream_len) for col in range(stream_cnt)]
         [self.on_stream_delay_update(s) for s in self.streams]
 
