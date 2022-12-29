@@ -13,7 +13,7 @@ class Stream:
         self.delay_msecs = 0
         self._char_idx = 0
 
-    def update(self, delta_msecs: int):
+    def update(self, delta_msecs: int) -> None:
         if self.delay_msecs <= 0:
             idx = self._char_idx
             self.chars[idx] = np.random.choice(self.app.KATAKANA)

@@ -58,10 +58,10 @@ class Matrix:
         [s.update(delta_msecs) for s in self.streams]
         self.screen.blit(self.surface, (0, 0))
 
-    def on_stream_delay_update(self, stream: Stream):
+    def on_stream_delay_update(self, stream: Stream) -> None:
         stream.delay_msecs = np.random.choice(self.stream_delays)
 
-    def on_event(self, event):
+    def on_event(self, event) -> None:
         if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
             self.exit()
 
