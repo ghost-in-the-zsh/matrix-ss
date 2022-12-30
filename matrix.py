@@ -1,4 +1,6 @@
+import os
 import sys
+import platform as pt
 
 import pygame as pg
 import pygame.freetype as ft
@@ -13,8 +15,10 @@ class Matrix:
     FONT_SIZE = 8
     BGCOLOR = pg.Color('black')
     KATAKANA = [chr(int('0x30a0', 16) + c) for c in range(96)]
-    MIN_COLOR = 100
+    MAX_FACTOR = 1.50
+    MIN_FACTOR = 0.75
     MAX_COLOR = 255
+    MIN_COLOR = 127
     DELTA_COLOR = 5
 
     def __init__(self):
@@ -25,6 +29,7 @@ class Matrix:
         self.surface = pg.Surface(size)
         self.font = ft.Font('font/msmincho.ttf', Matrix.FONT_SIZE)
         self.clock = pg.time.Clock()
+        self.wallpaper = self.get_wallpaper()
         self.streams = []
         self.stream_delays = [i for i in range(Matrix.MIN_MSECS, Matrix.MAX_MSECS)]
         self.setup_streams()
@@ -64,6 +69,22 @@ class Matrix:
     def on_event(self, event) -> None:
         if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
             self.exit()
+
+    def get_wallpaper(self) -> pg.pixelarray.PixelArray:
+        sys = pt.system()
+        if sys == 'Linux':
+            # TODO: check distro, gnome/kde, subprocess command to get wallpaper
+            image_path = f'{os.path.expanduser("~")}/Pictures/nier_automata/2b_closeup_ingame.jpg'
+        elif sys == 'Windows':
+            # check if 7, 10, etc
+            raise NotImplementedError
+        else:
+            # not supported or unknown
+            raise NotImplementedError
+
+        image = pg.image.load(image_path)
+        image = pg.transform.scale(image, self.screen.get_size()).convert()
+        return pg.pixelarray.PixelArray(image)
 
     def exit(self):
         pg.quit()
