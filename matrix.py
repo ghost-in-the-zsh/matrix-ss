@@ -8,18 +8,21 @@ import numpy as np
 
 from stream import Stream
 
+Color = pg.Color
+
 class Matrix:
     FPS = 30
-    MIN_MSECS = 1
+    MIN_MSECS = 0
     MAX_MSECS = 256
     FONT_SIZE = 8
-    BGCOLOR = pg.Color('black')
+    BGCOLOR = Color('black')
     KATAKANA = [chr(int('0x30a0', 16) + c) for c in range(96)]
-    MAX_FACTOR = 1.50
-    MIN_FACTOR = 0.75
+    MAX_FACTOR = 2.5
+    MIN_FACTOR = 0.5
     MAX_COLOR = 255
-    MIN_COLOR = 127
+    MIN_COLOR = 32
     DELTA_COLOR = 5
+    FULLSCREEN = False
 
     def __init__(self):
         pg.init()
@@ -34,8 +37,9 @@ class Matrix:
         self.stream_delays = [i for i in range(Matrix.MIN_MSECS, Matrix.MAX_MSECS)]
         self.setup_streams()
         self.elapsed_msecs = pg.time.get_ticks()
-        pg.display.toggle_fullscreen()
-        pg.mouse.set_visible(False)
+        if Matrix.FULLSCREEN:
+            pg.display.toggle_fullscreen()
+            pg.mouse.set_visible(False)
 
     def run(self) -> None:
         while True:
@@ -62,6 +66,8 @@ class Matrix:
         self.surface.fill(Matrix.BGCOLOR)
         [s.update(delta_msecs) for s in self.streams]
         self.screen.blit(self.surface, (0, 0))
+        if not self.FULLSCREEN:
+            pg.display.set_caption('FPS: {:.2f}'.format(self.clock.get_fps()))
 
     def on_stream_delay_update(self, stream: Stream) -> None:
         stream.delay_msecs = np.random.choice(self.stream_delays)

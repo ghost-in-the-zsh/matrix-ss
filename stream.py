@@ -12,7 +12,7 @@ class Char:
     ) -> None:
         self.glyph = glyph
         self.color = color if color else Color(0, 0, 0)
-        self.limit = limit if limit else Color(255, 255, 255)
+        self.limit = limit if limit else Color(0, 0, 0)
 
 class Stream:
     def __init__(self, matrix, col_idx: int, len: int) -> None:
@@ -40,7 +40,6 @@ class Stream:
         ch.limit.r = max(round(ch.color.r * self.app.MIN_FACTOR), self.app.MIN_COLOR)
         ch.limit.g = max(round(ch.color.g * self.app.MIN_FACTOR), self.app.MIN_COLOR)
         ch.limit.b = max(round(ch.color.b * self.app.MIN_FACTOR), self.app.MIN_COLOR)
-        self.chars[idx] = ch
         self._char_idx = (self._char_idx + 1) % len(self.chars)
         self.app.on_stream_delay_update(self)
 
