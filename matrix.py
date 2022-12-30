@@ -13,16 +13,16 @@ Color = pg.Color
 class Matrix:
     FPS = 30
     MIN_MSECS = 0
-    MAX_MSECS = 256
+    MAX_MSECS = 384
     FONT_SIZE = 8
     BGCOLOR = Color('black')
     KATAKANA = [chr(int('0x30a0', 16) + c) for c in range(96)]
-    MAX_FACTOR = 2.5
+    MAX_FACTOR = 2.75
     MIN_FACTOR = 0.5
     MAX_COLOR = 255
-    MIN_COLOR = 32
-    DELTA_COLOR = 5
-    FULLSCREEN = False
+    MIN_COLOR = 64
+    DELTA_COLOR = 10
+    FULLSCREEN = True
 
     def __init__(self):
         pg.init()
