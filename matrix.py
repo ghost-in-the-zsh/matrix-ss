@@ -8,10 +8,9 @@ import numpy as np
 
 from random import randrange, choice
 
+from pygame import Color
 from pygame.locals import *
 from stream import Stream
-
-Color = pg.Color
 
 class Matrix:
     FPS = 60
