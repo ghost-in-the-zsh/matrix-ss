@@ -6,6 +6,8 @@ import pygame as pg
 import pygame.freetype as ft
 import numpy as np
 
+from random import randrange, choice
+
 from pygame.locals import *
 from stream import Stream
 
@@ -36,7 +38,7 @@ class Matrix:
         self.clock = pg.time.Clock()
         self.wallpaper = self.get_wallpaper()
         self.streams = []
-        self.stream_delays = [i for i in range(Matrix.MIN_MSECS, Matrix.MAX_MSECS)]
+        self.stream_delays = []
         self.setup_streams()
         self.elapsed_msecs = pg.time.get_ticks()
         if Matrix.FULLSCREEN:
@@ -61,6 +63,10 @@ class Matrix:
     def setup_streams(self):
         stream_cnt = self.screen.get_width() // Matrix.FONT_SIZE
         stream_len = self.screen.get_height() // Matrix.FONT_SIZE
+        self.stream_delays = [
+            randrange(Matrix.MIN_MSECS, Matrix.MAX_MSECS)
+            for _ in range(stream_cnt)
+        ]
         [self.add_stream(col, stream_len) for col in range(stream_cnt)]
         [self.on_stream_delay_update(s) for s in self.streams]
 
@@ -72,7 +78,7 @@ class Matrix:
             pg.display.set_caption('FPS: {:.2f}'.format(self.clock.get_fps()))
 
     def on_stream_delay_update(self, stream: Stream) -> None:
-        stream.delay_msecs = np.random.choice(self.stream_delays)
+        stream.delay_msecs = choice(self.stream_delays)
 
     def on_event(self, event) -> None:
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
