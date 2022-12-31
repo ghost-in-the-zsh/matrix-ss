@@ -6,19 +6,20 @@ import pygame as pg
 import pygame.freetype as ft
 import numpy as np
 
+from pygame.locals import *
 from stream import Stream
 
 Color = pg.Color
 
 class Matrix:
-    FPS = 30
+    FPS = 60
     MIN_MSECS = 0
     MAX_MSECS = 384
     FONT_SIZE = 8
     BGCOLOR = Color('black')
     KATAKANA = [chr(int('0x30a0', 16) + c) for c in range(96)]
     MAX_FACTOR = 2.75
-    MIN_FACTOR = 0.5
+    MIN_FACTOR = 0.50
     MAX_COLOR = 255
     MIN_COLOR = 64
     DELTA_COLOR = 10
@@ -26,6 +27,7 @@ class Matrix:
 
     def __init__(self):
         pg.init()
+        pg.event.set_allowed([QUIT, KEYDOWN])
         info = pg.display.Info()
         size = (info.current_w, info.current_h)
         self.screen = pg.display.set_mode(size)
@@ -73,7 +75,7 @@ class Matrix:
         stream.delay_msecs = np.random.choice(self.stream_delays)
 
     def on_event(self, event) -> None:
-        if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
+        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             self.exit()
 
     def get_wallpaper(self) -> pg.pixelarray.PixelArray:
