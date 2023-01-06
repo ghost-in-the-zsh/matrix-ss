@@ -12,8 +12,8 @@ class Char:
         limit: Color=None
     ) -> None:
         self.glyph = glyph
-        self.color = color if color else Color(0, 0, 0)
-        self.limit = limit if limit else Color(0, 0, 0)
+        self.color = color if color else Color('black')
+        self.limit = limit if limit else Color('black')
 
 class Stream:
     def __init__(self, matrix, col_idx: int, len: int) -> None:
