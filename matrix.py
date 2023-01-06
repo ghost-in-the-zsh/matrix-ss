@@ -35,8 +35,7 @@ class Matrix:
         self.font = ft.Font('font/msmincho.ttf', Matrix.FONT_SIZE)
         self.clock = pg.time.Clock()
         self.wallpaper = self.get_wallpaper()
-        self.streams = []
-        self.stream_delays = []
+
         self.setup_streams()
         self.elapsed_msecs = pg.time.get_ticks()
         if Matrix.FULLSCREEN:
@@ -48,37 +47,25 @@ class Matrix:
             current_msecs = pg.time.get_ticks()
             delta_msecs = current_msecs - self.elapsed_msecs
             self.update(delta_msecs)
-            [self.on_event(e) for e in pg.event.get()]
+            for e in pg.event.get():
+                self.handle_event(e)
             pg.display.flip()
             self.clock.tick(Matrix.FPS)
             self.elapsed_msecs = current_msecs
 
-    def add_stream(self, column: int, length: int) -> Stream:
-        s = Stream(self, column, length)
-        self.streams.append(s)
-        return s
-
     def setup_streams(self):
         stream_cnt = self.screen.get_width() // Matrix.FONT_SIZE
         stream_len = self.screen.get_height() // Matrix.FONT_SIZE
-        self.stream_delays = [
-            randrange(Matrix.MIN_MSECS, Matrix.MAX_MSECS)
-            for _ in range(stream_cnt)
-        ]
-        [self.add_stream(col, stream_len) for col in range(stream_cnt)]
-        [self.on_stream_delay_update(s) for s in self.streams]
+        self.streams = [Stream(self, col, stream_len) for col in range(stream_cnt)]
 
     def update(self, delta_msecs: float):
         self.surface.fill(Matrix.BGCOLOR)
-        [s.update(delta_msecs) for s in self.streams]
+        for s in self.streams: s.update(delta_msecs)
         self.screen.blit(self.surface, (0, 0))
         if not self.FULLSCREEN:
             pg.display.set_caption('FPS: {:.2f}'.format(self.clock.get_fps()))
 
-    def on_stream_delay_update(self, stream: Stream) -> None:
-        stream.delay_msecs = choice(self.stream_delays)
-
-    def on_event(self, event) -> None:
+    def handle_event(self, event) -> None:
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
             self.exit()
 

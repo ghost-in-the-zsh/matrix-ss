@@ -1,4 +1,4 @@
-from random import choice
+from random import randrange, choice
 
 import pygame as pg
 
@@ -20,17 +20,28 @@ class Stream:
         self.app = matrix
         self.column = col_idx
         self.chars = [Char() for _ in range(len)]
-        self.delay_msecs = 0
-        self._char_idx = 0
+        updates_limit = randrange(1, 17)
+        self.char_delays = [
+            randrange(matrix.MIN_MSECS, matrix.MAX_MSECS)
+            for _ in range(updates_limit)
+        ]
+        self.char_indices = list(set([
+            randrange(0, len)
+            for _ in range(updates_limit)
+        ]))
 
     def update(self, delta_msecs: int) -> None:
-        if self.delay_msecs <= 0:
-            self.change_char()
+        # if self.char_delays <= 0:
+        self.change_chars()
         self.render()
-        self.delay_msecs -= delta_msecs
+        # self.char_delays -= delta_msecs
 
-    def change_char(self) -> None:
-        idx = self._char_idx
+    def change_chars(self) -> None:
+        for i in range(len(self.char_indices)):
+            self.change_char(self.char_indices[i])
+            self.char_indices[i] = (self.char_indices[i] + 1) % len(self.chars)
+
+    def change_char(self, idx: int) -> None:
         pos = (self.column * self.app.FONT_SIZE, idx * self.app.FONT_SIZE)
         ch = self.chars[idx]
         ch.glyph = choice(self.app.KATAKANA)
@@ -41,8 +52,7 @@ class Stream:
         ch.color.r = min(round(ch.color.r * self.app.MAX_FACTOR), self.app.MAX_COLOR)
         ch.color.g = min(round(ch.color.g * self.app.MAX_FACTOR), self.app.MAX_COLOR)
         ch.color.b = min(round(ch.color.b * self.app.MAX_FACTOR), self.app.MAX_COLOR)
-        self._char_idx = (self._char_idx + 1) % len(self.chars)
-        self.app.on_stream_delay_update(self)
+        # self.app.on_stream_delay_update(self)
 
     def render(self) -> None:
         for row, char in enumerate(filter(lambda ch: ch.glyph, self.chars)):
