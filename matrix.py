@@ -4,7 +4,6 @@ import platform as pt
 
 import pygame as pg
 import pygame.freetype as ft
-import numpy as np
 
 from random import randrange, choice
 

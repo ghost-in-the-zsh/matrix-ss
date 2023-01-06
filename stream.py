@@ -1,5 +1,6 @@
+from random import choice
+
 import pygame as pg
-import numpy as np
 
 Color = pg.Color
 
@@ -32,7 +33,7 @@ class Stream:
         idx = self._char_idx
         pos = (self.column * self.app.FONT_SIZE, idx * self.app.FONT_SIZE)
         ch = self.chars[idx]
-        ch.glyph = np.random.choice(self.app.KATAKANA)
+        ch.glyph = choice(self.app.KATAKANA)
         ch.color = Color(self.app.wallpaper[pos])
         ch.limit.r = max(round(ch.color.r * self.app.MIN_FACTOR), self.app.MIN_COLOR)
         ch.limit.g = max(round(ch.color.g * self.app.MIN_FACTOR), self.app.MIN_COLOR)
