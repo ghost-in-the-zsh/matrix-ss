@@ -35,7 +35,6 @@ class Matrix:
         self.font = ft.Font('font/msmincho.ttf', Matrix.FONT_SIZE)
         self.clock = pg.time.Clock()
         self.wallpaper = self.get_wallpaper()
-
         self.setup_streams()
         self.elapsed_msecs = pg.time.get_ticks()
         if Matrix.FULLSCREEN:
