@@ -18,11 +18,10 @@ class Matrix:
     FONT_SIZE = 8
     BGCOLOR = Color('black')
     KATAKANA = [chr(int('0x30a0', 16) + c) for c in range(96)]
-    MAX_FACTOR = 2.75
+    MAX_FACTOR = 3.75
     MIN_FACTOR = 0.50
     MAX_COLOR = 255
-    MIN_COLOR = 64
-    DELTA_COLOR = 10
+    DELTA_COLOR = 7
     FULLSCREEN = True
 
     def __init__(self):
