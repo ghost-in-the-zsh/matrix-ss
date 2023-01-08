@@ -1,8 +1,8 @@
 from random import randrange, choice
 
 import pygame as pg
+from pygame import Color
 
-Color = pg.Color
 
 class Char:
     def __init__(
