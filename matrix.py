@@ -33,8 +33,8 @@ class Matrix:
         self.surface = pg.Surface(size)
         self.font = ft.Font('font/msmincho.ttf', Matrix.FONT_SIZE)
         self.clock = pg.time.Clock()
-        self.wallpaper = self.get_wallpaper()
-        self.setup_streams()
+        self.wallpaper = self._get_wallpaper()
+        self._setup_streams()
         self.elapsed_msecs = pg.time.get_ticks()
         if Matrix.FULLSCREEN:
             pg.display.toggle_fullscreen()
@@ -44,30 +44,30 @@ class Matrix:
         while True:
             current_msecs = pg.time.get_ticks()
             delta_msecs = current_msecs - self.elapsed_msecs
-            self.update(delta_msecs)
+            self._update(delta_msecs)
             for e in pg.event.get():
-                self.handle_event(e)
+                self._handle_event(e)
             pg.display.flip()
             self.clock.tick(Matrix.FPS)
             self.elapsed_msecs = current_msecs
 
-    def setup_streams(self):
+    def _setup_streams(self):
         stream_cnt = self.screen.get_width() // Matrix.FONT_SIZE
         stream_len = self.screen.get_height() // Matrix.FONT_SIZE
         self.streams = [Stream(self, col, stream_len) for col in range(stream_cnt)]
 
-    def update(self, delta_msecs: float):
+    def _update(self, delta_msecs: float):
         self.surface.fill(Matrix.BGCOLOR)
         for s in self.streams: s.update(delta_msecs)
         self.screen.blit(self.surface, (0, 0))
         if not self.FULLSCREEN:
             pg.display.set_caption('FPS: {:.2f}'.format(self.clock.get_fps()))
 
-    def handle_event(self, event) -> None:
+    def _handle_event(self, event) -> None:
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-            self.exit()
+            self._exit()
 
-    def get_wallpaper(self) -> pg.pixelarray.PixelArray:
+    def _get_wallpaper(self) -> pg.pixelarray.PixelArray:
         sys = pt.system()
         if sys == 'Linux':
             # TODO: check distro, gnome/kde, subprocess command to get wallpaper
@@ -83,6 +83,6 @@ class Matrix:
         image = pg.transform.scale(image, self.screen.get_size()).convert()
         return pg.pixelarray.PixelArray(image)
 
-    def exit(self):
+    def _exit(self):
         pg.quit()
         sys.exit(0)
