@@ -43,9 +43,9 @@ class Stream:
         ch = self.chars[idx]
         ch.glyph = choice(self.app.KATAKANA)
         ch.color = Color(self.app.wallpaper[pos])
-        ch.limit.r = round(ch.color.r * self.app.MIN_FACTOR)
-        ch.limit.g = round(ch.color.g * self.app.MIN_FACTOR)
-        ch.limit.b = round(ch.color.b * self.app.MIN_FACTOR)
+        ch.limit.r = max(round(ch.color.r * self.app.MIN_FACTOR), self.app.MIN_COLOR)
+        ch.limit.g = max(round(ch.color.g * self.app.MIN_FACTOR), self.app.MIN_COLOR)
+        ch.limit.b = max(round(ch.color.b * self.app.MIN_FACTOR), self.app.MIN_COLOR)
         ch.color.r = min(round(ch.color.r * self.app.MAX_FACTOR), self.app.MAX_COLOR)
         ch.color.g = min(round(ch.color.g * self.app.MAX_FACTOR), self.app.MAX_COLOR)
         ch.color.b = min(round(ch.color.b * self.app.MAX_FACTOR), self.app.MAX_COLOR)

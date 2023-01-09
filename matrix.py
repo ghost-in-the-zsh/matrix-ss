@@ -21,6 +21,7 @@ class Matrix:
     MAX_FACTOR = 3.75
     MIN_FACTOR = 0.50
     MAX_COLOR = 255
+    MIN_COLOR = 0
     DELTA_COLOR = 7
     FULLSCREEN = True
 
