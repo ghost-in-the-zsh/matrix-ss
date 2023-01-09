@@ -20,24 +20,33 @@ class _Time:
     delay: int=0    # in milliseconds
     accum: int=0    # in milliseconds
 
+    def update(self, msecs: int) -> None:
+        self.accum += msecs
+
     def reset(self, delay: int) -> None:
         self.delay = delay
         self.accum = 0
+
+    def has_expired(self) -> bool:
+        return self.accum >= self.delay
+
+@dataclass
+class _Trail:
+    idx: int=0  # stream index
+    time: _Time=None
 
 class Stream:
     def __init__(self, matrix, col_idx: int, length: int) -> None:
         self._app = matrix
         self._column = col_idx
         self._chars = [_Char() for _ in range(length)]
-        trail_count = randrange(1, 3)
-        self._times = [
+        max_trails = randrange(1, 3)
+        trail_indices = list(set([randrange(0, length) for _ in range(max_trails)]))
+        trail_count = len(trail_indices)
+        self._trails = [_Trail(
+            trail_indices[i],
             _Time(randrange(matrix.MIN_MSECS, matrix.MAX_MSECS))
-            for _ in range(trail_count)
-        ]
-        self._trails = list(set([
-            randrange(0, length)
-            for _ in range(trail_count)
-        ]))
+        ) for i in range(trail_count)]
 
     def update(self, delta_msecs: int) -> None:
         self._update_trails(delta_msecs)
@@ -45,15 +54,15 @@ class Stream:
 
     def _update_trails(self, delta_msecs: int) -> None:
         for i in range(len(self._trails)):
-            self._times[i].accum += delta_msecs
-            if self._times[i].accum >= self._times[i].delay:
-                self._update_trail(self._trails[i])
-                self._trails[i] = (self._trails[i] + 1) % len(self._chars)
-                if self._trails[i] == 0:
+            self._trails[i].time.update(delta_msecs)
+            if self._trails[i].time.has_expired():
+                self._update_char(self._trails[i].idx)
+                self._trails[i].idx = (self._trails[i].idx + 1) % len(self._chars)
+                if self._trails[i].idx == 0:
                     delay = randrange(self._app.MIN_MSECS, self._app.MAX_MSECS)
-                    self._times[i].reset(delay)
+                    self._trails[i].time.reset(delay)
 
-    def _update_trail(self, idx: int) -> None:
+    def _update_char(self, idx: int) -> None:
         pos = (self._column * self._app.FONT_SIZE, idx * self._app.FONT_SIZE)
         ch = self._chars[idx]
         ch.glyph = choice(self._app.KATAKANA)
