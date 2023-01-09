@@ -3,7 +3,7 @@ from random import randrange, choice
 import pygame as pg
 from pygame import Color
 
-class Char:
+class _Char:
     def __init__(
         self,
         glyph: str='',
@@ -18,7 +18,7 @@ class Stream:
     def __init__(self, matrix, col_idx: int, length: int) -> None:
         self.app = matrix
         self.column = col_idx
-        self.chars = [Char() for _ in range(length)]
+        self.chars = [_Char() for _ in range(length)]
         updates_limit = randrange(1, 5)
         self.char_delays = [
             randrange(matrix.MIN_MSECS, matrix.MAX_MSECS)
