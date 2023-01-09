@@ -12,7 +12,7 @@ from pygame.locals import *
 from stream import Stream
 
 class Matrix:
-    FPS = 60
+    FPS = 30
     MIN_MSECS = 0
     MAX_MSECS = 384
     FONT_SIZE = 8
