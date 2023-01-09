@@ -7,7 +7,7 @@ from pygame import Color
 class _Char:
     def __init__(
         self,
-        glyph: str='',
+        glyph: str=None,
         color: Color=None,
         limit: Color=None
     ) -> None:
