@@ -36,7 +36,7 @@ class Matrix:
         self.clock = pg.time.Clock()
         self.wallpaper = self._get_wallpaper()
         self._setup_streams()
-        self.elapsed_msecs = pg.time.get_ticks()
+        self._elapsed_msecs = pg.time.get_ticks()
         if Matrix.FULLSCREEN:
             pg.display.toggle_fullscreen()
             pg.mouse.set_visible(False)
@@ -44,13 +44,13 @@ class Matrix:
     def run(self) -> None:
         while True:
             current_msecs = pg.time.get_ticks()
-            delta_msecs = current_msecs - self.elapsed_msecs
+            delta_msecs = current_msecs - self._elapsed_msecs
             self._update(delta_msecs)
             for e in pg.event.get():
                 self._handle_event(e)
             pg.display.flip()
             self.clock.tick(Matrix.FPS)
-            self.elapsed_msecs = current_msecs
+            self._elapsed_msecs = current_msecs
 
     def _setup_streams(self):
         stream_cnt = self.screen.get_width() // Matrix.FONT_SIZE
