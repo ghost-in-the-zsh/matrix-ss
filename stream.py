@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from random import randrange, choice
 
 import pygame as pg
@@ -14,19 +15,28 @@ class _Char:
         self.color = color if color else Color('black')
         self.limit = limit if limit else Color('black')
 
+@dataclass
+class _Time:
+    delay: int=0    # in milliseconds
+    accum: int=0    # in milliseconds
+
+    def reset(self, delay: int) -> None:
+        self.delay = delay
+        self.accum = 0
+
 class Stream:
     def __init__(self, matrix, col_idx: int, length: int) -> None:
         self._app = matrix
         self._column = col_idx
         self._chars = [_Char() for _ in range(length)]
-        updates_limit = randrange(1, 5)
-        self._char_delays = [
-            randrange(matrix.MIN_MSECS, matrix.MAX_MSECS)
-            for _ in range(updates_limit)
+        trail_count = randrange(1, 3)
+        self._times = [
+            _Time(randrange(matrix.MIN_MSECS, matrix.MAX_MSECS))
+            for _ in range(trail_count)
         ]
-        self._char_indices = list(set([
+        self._trails = list(set([
             randrange(0, length)
-            for _ in range(updates_limit)
+            for _ in range(trail_count)
         ]))
 
     def update(self, delta_msecs: int) -> None:
@@ -34,14 +44,16 @@ class Stream:
         self._render()
 
     def _update_trails(self, delta_msecs: int) -> None:
-        for i in range(len(self._char_indices)):
-            self._char_delays[i] -= delta_msecs
-            if self._char_delays[i] <= 0:
-                self._change_char(self._char_indices[i])
-                self._char_indices[i] = (self._char_indices[i] + 1) % len(self._chars)
-                self._char_delays[i] = randrange(self._app.MIN_MSECS, self._app.MAX_MSECS)
+        for i in range(len(self._trails)):
+            self._times[i].accum += delta_msecs
+            if self._times[i].accum >= self._times[i].delay:
+                self._update_trail(self._trails[i])
+                self._trails[i] = (self._trails[i] + 1) % len(self._chars)
+                if self._trails[i] == 0:
+                    delay = randrange(self._app.MIN_MSECS, self._app.MAX_MSECS)
+                    self._times[i].reset(delay)
 
-    def _change_char(self, idx: int) -> None:
+    def _update_trail(self, idx: int) -> None:
         pos = (self._column * self._app.FONT_SIZE, idx * self._app.FONT_SIZE)
         ch = self._chars[idx]
         ch.glyph = choice(self._app.KATAKANA)
