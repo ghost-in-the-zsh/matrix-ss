@@ -47,6 +47,7 @@ class Stream:
             trail_indices[i],
             _Time(randrange(matrix.MIN_MSECS, matrix.MAX_MSECS))
         ) for i in range(trail_count)]
+        self._fonts_cache = {}
 
     def update(self, delta_msecs: int) -> None:
         self._update_trails(delta_msecs)
@@ -78,7 +79,17 @@ class Stream:
         for row, char in enumerate(filter(lambda ch: ch.glyph, self._chars)):
             pos = (self._column * self._app.FONT_SIZE, row * self._app.FONT_SIZE)
             ch = self._chars[row]
-            self._app.font.render_to(self._app.surface, pos, ch.glyph, fgcolor=ch.color)
+            self._app.surface.blit(self._get_font(ch), pos)
             ch.color.r = max(ch.color.r - self._app.DELTA_COLOR, ch.limit.r)
             ch.color.g = max(ch.color.g - self._app.DELTA_COLOR, ch.limit.g)
             ch.color.b = max(ch.color.b - self._app.DELTA_COLOR, ch.limit.b)
+
+    def _get_font(self, ch: _Char) -> pg.Surface:
+        r, g, b, _ = ch.color   # destructure; pg.Color isn't hashable
+        chkey = (ch.glyph, (r, g, b))
+        if chkey in self._fonts_cache:
+            font = self._fonts_cache[chkey]
+        else:
+            font = self._app.font.render(ch.glyph, ch.color, self._app.BGCOLOR)[0]
+            self._fonts_cache[chkey] = font
+        return font
