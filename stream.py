@@ -92,6 +92,6 @@ class Stream:
         if chkey in self._fonts_cache:
             font = self._fonts_cache[chkey]
         else:
-            font = self._app.font.render(ch.glyph, ch.color, self._app.BGCOLOR)[0]
+            font = self._app.font.render(ch.glyph, ch.color, self._app.BGCOLOR)[0].convert()
             self._fonts_cache[chkey] = font
         return font
