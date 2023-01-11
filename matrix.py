@@ -5,6 +5,7 @@ import platform as pt
 import pygame as pg
 import pygame.freetype as ft
 
+from typing import List
 from random import randrange, choice
 
 from pygame import Color
@@ -35,7 +36,7 @@ class Matrix:
         self.font = ft.Font('font/msmincho.ttf', Matrix.FONT_SIZE)
         self.clock = pg.time.Clock()
         self.wallpaper = self._get_wallpaper()
-        self._setup_streams()
+        self.streams = self._setup_streams()
         self._elapsed_msecs = pg.time.get_ticks()
         if Matrix.FULLSCREEN:
             pg.display.toggle_fullscreen()
@@ -52,10 +53,10 @@ class Matrix:
             self.clock.tick(Matrix.FPS)
             self._elapsed_msecs = current_msecs
 
-    def _setup_streams(self):
+    def _setup_streams(self) -> List[Stream]:
         stream_cnt = self.screen.get_width() // Matrix.FONT_SIZE
         stream_len = self.screen.get_height() // Matrix.FONT_SIZE
-        self.streams = [Stream(self, col, stream_len) for col in range(stream_cnt)]
+        return [Stream(self, col, stream_len) for col in range(stream_cnt)]
 
     def _update(self, delta_msecs: float):
         self.surface.fill(Matrix.BGCOLOR)
