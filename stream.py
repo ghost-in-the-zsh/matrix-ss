@@ -76,13 +76,15 @@ class Stream:
         ch.color.b = min(round(ch.color.b * self._app.MAX_FACTOR), self._app.MAX_COLOR)
 
     def _render(self) -> None:
+        blit_sequence = []
         for row, char in enumerate(filter(lambda ch: ch.glyph, self._chars)):
             pos = (self._column * self._app.FONT_SIZE, row * self._app.FONT_SIZE)
             ch = self._chars[row]
-            self._app.surface.blit(self._get_font(ch), pos)
+            blit_sequence.append((self._get_font(ch), pos))
             ch.color.r = max(ch.color.r - self._app.DELTA_COLOR, ch.limit.r)
             ch.color.g = max(ch.color.g - self._app.DELTA_COLOR, ch.limit.g)
             ch.color.b = max(ch.color.b - self._app.DELTA_COLOR, ch.limit.b)
+        self._app.surface.blits(blit_sequence, False)
 
     def _get_font(self, ch: _Char) -> pg.Surface:
         r, g, b, _ = ch.color   # destructure; pg.Color isn't hashable
