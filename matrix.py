@@ -11,6 +11,7 @@ from random import randrange, choice
 from pygame import Color
 from pygame.locals import *
 from stream import Stream
+from wallpaper import get_wallpaper_filepath
 
 class Matrix:
     FPS = 30
@@ -70,18 +71,7 @@ class Matrix:
             self._exit()
 
     def _get_wallpaper(self) -> pg.pixelarray.PixelArray:
-        sys = pt.system()
-        if sys == 'Linux':
-            # TODO: check distro, gnome/kde, subprocess command to get wallpaper
-            image_path = f'{os.path.expanduser("~")}/Pictures/nier_automata/2b_closeup_ingame.jpg'
-        elif sys == 'Windows':
-            # check if 7, 10, etc
-            raise NotImplementedError
-        else:
-            # not supported or unknown
-            raise NotImplementedError
-
-        image = pg.image.load(image_path)
+        image = pg.image.load(get_wallpaper_filepath())
         image = pg.transform.scale(image, self.screen.get_size()).convert()
         return pg.pixelarray.PixelArray(image)
 
