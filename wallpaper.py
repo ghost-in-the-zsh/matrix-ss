@@ -46,7 +46,18 @@ def _impl_gnu_linux_gnome() -> Text:
     # $ gsettings get org.gnome.desktop.background picture-uri
     # 'file:///usr/share/backgrounds/gnome/adwaita-l.webp'
     # ```
-    raise NotImplementedError('Not implemented for Gnome (yet?)')
+    import subprocess as sp
+
+    try:
+        stdout = sp.run(
+            # NOTE: If running this from KDE, path will be bogus.
+            ['gsettings', 'get', 'org.gnome.desktop.background', 'picture-uri'],
+            capture_output=True,
+            shell=True,
+        ).stdout.strip()
+        return stdout.removeprefix('file://')
+    except Exception:
+        raise RuntimeError('Could not find wallpaper in Gnome')
 
 def _impl_windows() -> Text:
     # check if 7, 10, etc
