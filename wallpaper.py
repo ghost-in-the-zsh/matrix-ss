@@ -25,11 +25,14 @@ def _impl_gnu_linux() -> Text:
     raise NotImplementedError(f'Not implemented for session: {session}')
 
 def _impl_gnu_linux_kde() -> Text:
-    # Check the ~/.config/kscreenlockerrc file:
-    # ```
-    # [Greeter][Wallpaper][org.kde.image][General]
-    # Image=/abs-path/to/wallpaper/file.jpg
-    # ```
+    # Under the ~/.config/ directory, the following files are of interest:
+    #
+    #   1. plasma-org.kde.plasma.desktop-appletsrc: Current wallpaper
+    #   2. plasmarc: List of manually added wallpapers for the selection screen
+    #   3. kscreenlockerrc: The screen lock wallpaper image
+    #
+    # Format: Image=file:///abs-path/to/wallpaper/file.jpg
+    #
     from os.path import join, expanduser
     try:
         path = join(expanduser('~'), '.config', 'plasma-org.kde.plasma.desktop-appletsrc')
