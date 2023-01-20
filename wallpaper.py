@@ -7,7 +7,7 @@ def get_wallpaper_filepath() -> Text:
     if sys == 'linux':
         return _impl_gnu_linux()
     elif sys == 'windows':
-        return _impl_windows()
+        return _impl_winblows()
     else:
         raise NotImplementedError(f'Not (yet?) implemented for: {sys}')
 
@@ -59,6 +59,6 @@ def _impl_gnu_linux_gnome() -> Text:
     except Exception:
         raise RuntimeError('Could not find wallpaper in Gnome')
 
-def _impl_windows() -> Text:
+def _impl_winblows() -> Text:
     # check if 7, 10, etc
     raise NotImplementedError('Not implemented for Windows (yet?)')
