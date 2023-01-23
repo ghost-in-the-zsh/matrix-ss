@@ -15,7 +15,7 @@ def _impl_gnu_linux() -> Text:
     from os import environ as env
 
     kde = ('plasma',)
-    gnome = ('gnome',)
+    gnome = ('ubuntu',)
     session = env['DESKTOP_SESSION']
     if session in kde:
         return _impl_gnu_linux_kde()
