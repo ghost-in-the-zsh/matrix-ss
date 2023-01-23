@@ -1,15 +1,13 @@
-import os
 import sys
-import platform as pt
+
+from typing import List
 
 import pygame as pg
 import pygame.freetype as ft
 
-from typing import List
-from random import randrange, choice
-
 from pygame import Color
 from pygame.locals import *
+
 from stream import Stream
 from wallpaper import get_wallpaper_filepath
 
