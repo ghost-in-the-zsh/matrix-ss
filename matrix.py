@@ -59,7 +59,8 @@ class Matrix:
 
     def _update(self, delta_msecs: float):
         self.surface.fill(Matrix.BGCOLOR)
-        for s in self.streams: s.update(delta_msecs)
+        for s in self.streams:
+            s.update(delta_msecs)
         self.screen.blit(self.surface, (0, 0))
         if not self.FULLSCREEN:
             pg.display.set_caption('FPS: {:.2f}'.format(self.clock.get_fps()))
