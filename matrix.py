@@ -78,3 +78,8 @@ class Matrix:
     def _exit(self):
         pg.quit()
         sys.exit(0)
+
+
+if __name__ == '__main__':
+    m = Matrix()
+    m.run()
