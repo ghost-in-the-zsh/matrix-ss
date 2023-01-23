@@ -77,8 +77,7 @@ class Stream:
     def _render(self) -> None:
         for row, char in enumerate(filter(lambda ch: ch.glyph, self._chars)):
             pos = (self._column * self._app.FONT_SIZE, row * self._app.FONT_SIZE)
-            ch = self._chars[row]
-            self._app.font.render_to(self._app.surface, pos, ch.glyph, fgcolor=ch.color)
-            ch.color.r = max(ch.color.r - self._app.DELTA_COLOR, ch.limit.r)
-            ch.color.g = max(ch.color.g - self._app.DELTA_COLOR, ch.limit.g)
-            ch.color.b = max(ch.color.b - self._app.DELTA_COLOR, ch.limit.b)
+            self._app.font.render_to(self._app.surface, pos, char.glyph, fgcolor=char.color)
+            char.color.r = max(char.color.r - self._app.DELTA_COLOR, char.limit.r)
+            char.color.g = max(char.color.g - self._app.DELTA_COLOR, char.limit.g)
+            char.color.b = max(char.color.b - self._app.DELTA_COLOR, char.limit.b)
