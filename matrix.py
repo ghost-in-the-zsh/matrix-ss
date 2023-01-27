@@ -70,7 +70,14 @@ class Matrix:
             self._exit()
 
     def _get_wallpaper(self) -> pg.pixelarray.PixelArray:
-        image = pg.image.load(get_wallpaper_filepath())
+        try:
+            image = pg.image.load(get_wallpaper_filepath()).convert()
+        except Exception:
+            # Setup a green image as a fallback.
+            # NOTE: Is `Color` bugged? Setting `(0, 160, 0)` or `'green'`
+            #       stays black rather than green...
+            image = pg.Surface(self.screen.get_size()).convert()
+            image.fill(Color(160, 0, 160))
         image = pg.transform.scale(image, self.screen.get_size()).convert()
         return pg.pixelarray.PixelArray(image)
 
