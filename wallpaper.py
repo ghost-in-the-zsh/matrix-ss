@@ -46,31 +46,30 @@ def _impl_gnu_linux_kde() -> Text:
 def _impl_gnu_linux_gnome() -> Text:
     import subprocess as sp
 
-    # The user has 2 basic theme options under Gnome: Default and Dark.
-    # To get a valid wallpaper image path, we must first figure out
-    # which theme the user has active.
-    #
-    # The string `'default'` is returned when the Default theme is active.
-    # For the Dark theme, `'prefer-dark'` is returned.
-    stdout = sp.run(
-        'gsettings get org.gnome.desktop.interface color-scheme',
-        capture_output=True,
-        shell=True,
-        universal_newlines=True
-    ).stdout.strip().replace("'", '')
-
-    # Note that both `picture-uri` and `picture-uri-dark` will
-    # return a value regardles of the user's theme. We have to figure out,
-    # for our purposes, which one is valid and which one is bogus.
-    picture_uri = 'picture-uri-dark' if stdout == 'prefer-dark' else 'picture-uri'
     try:
-        stdout = sp.run(
-            f'gsettings get org.gnome.desktop.background {picture_uri}',
+        # The user has 2 basic theme options under Gnome: Default and Dark.
+        # To get a valid wallpaper image path, we must first figure out
+        # which theme the user has active.
+        #
+        # The string `'default'` is returned when the Default theme is active.
+        # For the Dark theme, `'prefer-dark'` is returned.
+        theme = sp.run(
+            'gsettings get org.gnome.desktop.interface color-scheme',
             capture_output=True,
             shell=True,
             universal_newlines=True
         ).stdout.strip().replace("'", '')
-        return stdout.removeprefix('file://')
+
+        # Note that both `picture-uri` and `picture-uri-dark` will
+        # return a value regardles of the user's theme. We have to figure out,
+        # for our purposes, which one is valid and which one is bogus.
+        uri = 'picture-uri-dark' if theme == 'prefer-dark' else 'picture-uri'
+        return sp.run(
+            f'gsettings get org.gnome.desktop.background {uri}',
+            capture_output=True,
+            shell=True,
+            universal_newlines=True
+        ).stdout.strip().removeprefix('file://').replace("'", '')
     except Exception:
         raise RuntimeError('Could not find wallpaper in Gnome')
 
