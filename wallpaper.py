@@ -34,6 +34,7 @@ def _impl_gnu_linux_kde() -> Text:
     # Format: Image=file:///abs-path/to/wallpaper/file.jpg
     #
     from os.path import join, expanduser
+
     try:
         path = join(expanduser('~'), '.config', 'plasma-org.kde.plasma.desktop-appletsrc')
         with open(path) as config:
@@ -55,8 +56,9 @@ def _impl_gnu_linux_gnome() -> Text:
         # For the Dark theme, `'prefer-dark'` is returned.
         theme = sp.run(
             'gsettings get org.gnome.desktop.interface color-scheme',
-            capture_output=True,
             shell=True,
+            check=True,
+            capture_output=True,
             universal_newlines=True
         ).stdout.strip().replace("'", '')
 
@@ -66,8 +68,9 @@ def _impl_gnu_linux_gnome() -> Text:
         uri = 'picture-uri-dark' if theme == 'prefer-dark' else 'picture-uri'
         return sp.run(
             f'gsettings get org.gnome.desktop.background {uri}',
-            capture_output=True,
             shell=True,
+            check=True,
+            capture_output=True,
             universal_newlines=True
         ).stdout.strip().removeprefix('file://').replace("'", '')
     except Exception:
