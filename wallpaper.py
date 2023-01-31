@@ -77,5 +77,35 @@ def _impl_gnu_linux_gnome() -> Text:
         raise RuntimeError('Could not find wallpaper in Gnome')
 
 def _impl_winblows() -> Text:
-    # check if 7, 10, etc
-    raise NotImplementedError('Not implemented for Windows (yet?)')
+    import winreg as wr
+    # The `winreg` code was tested to work in Windows 7 (Python 3.7) and
+    # 10 (Python 3.11). However, there *are* some details to keep in mind:
+    #
+    #   1. In Win7, when an image is set as the wallpaper, it gets copied over
+    #      and renamed; e.g. `QueryValueEx` returned the following tuple:
+    #      ('C:\\Users\\<UserName>\\AppData\\Roaming\\Microsoft\\Windows\\Themes\\TranscodedWallpaper.jpg', 1)
+    #   2. In Win10, the same tuple as Win7 is returned, but the path
+    #      within it MAY NOT BE VALID. What you get is the location where
+    #      the image used to be AT THE TIME IT WAS SET by the user as the
+    #      wallpaper. By the time we `QueryValueEx`, the image could've been
+    #      moved, deleted, renamed, etc. It needs an extra check to verify whether
+    #      the file actually exists or not.
+    #   3. The following PowerShell command:
+    #      PS > Get-ItemPropertyValue \
+    #           -Path "Registry::HKEY_CURRENT_USER\Control Panel\Desktop" \
+    #           -Name Wallpaper
+    #      1. Win7 : Fails. The `Get-ItemPropertyValue` is not recognized, so
+    #                it's not implemented there.
+    #      2. Win10: Returns the same output as `QueryValueEx`, which probably means
+    #                the PowerShell impl. is using `QueryValueEx` under the hood.
+    #
+    hkey = wr.HKEY_CURRENT_USER
+    subkey = 'Control Panel\\Desktop'
+    try:
+        with wr.OpenKeyEx(hkey, subkey) as regkey:          # type: PyHKEY
+            value = wr.QueryValueEx(regkey, 'Wallpaper')    # type: Tuple[str, int]
+            path = value[0]
+            with open(path): pass   # see Win10 note above
+            return path
+    except Exception:
+        raise RuntimeError('Could not find wallpaper in Windows')
