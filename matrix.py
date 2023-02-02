@@ -14,7 +14,7 @@ from wallpaper import get_wallpaper_filepath
 class Matrix:
     FPS = 60
     MIN_MSECS = 0
-    MAX_MSECS = 384
+    MAX_MSECS = 2048
     FONT_SIZE = 8
     BGCOLOR = Color('black')
     KATAKANA = [chr(int('0x30a0', 16) + c) for c in range(96)]
