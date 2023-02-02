@@ -12,7 +12,7 @@ from stream import Stream
 from wallpaper import get_wallpaper_filepath
 
 class Matrix:
-    FPS = 30
+    FPS = 60
     MIN_MSECS = 0
     MAX_MSECS = 384
     FONT_SIZE = 8
