@@ -22,7 +22,7 @@ class Matrix:
     MIN_FACTOR = 1.00
     MAX_COLOR = 255
     MIN_COLOR = 0
-    DELTA_COLOR = 7
+    DELTA_COLOR = 17
     FULLSCREEN = True
 
     def __init__(self):
